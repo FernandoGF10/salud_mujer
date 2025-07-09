@@ -15,8 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from Patient.views import patients, patient, PatientViewSet
+from Patient.views import patients, patient, PatientViewSet, PatientMixin
 from rest_framework.routers import DefaultRouter
+from rest_framework.authtoken.views import obtain_auth_token
 
 router = DefaultRouter()
 router.register(r'patient', PatientViewSet, basename='viewset-patient')
@@ -24,6 +25,8 @@ router.register(r'patient', PatientViewSet, basename='viewset-patient')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('patients/', patients.as_view()),
-    path('patient/', patient.as_view()),
+    path('patient/', PatientMixin.as_view()),
+    path('patient/<str:object_id>', patient.as_view()),
     path('', include(router.urls)),
+    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
 ]
